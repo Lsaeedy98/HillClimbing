@@ -17,6 +17,7 @@ public class EightQueenNode {
     private ArrayList<EightQueenNode> neighbours;
     private int f;
     private EightQueenNode parent;
+    
     public EightQueenNode(){
 	rowsState = new int[N]; //empty state
 	neighbours = new ArrayList<EightQueenNode>(); //empty neighbour list
@@ -87,13 +88,16 @@ public class EightQueenNode {
 		}
 		return result;
 	}
+    public void printNode(){
+        System.out.println(this.toString());
+    }
     public void makeNeighbours(){
             int count=0;
 	for(int i=0; i<N; i++){
             for(int j=1; j<N; j++){
-                //should j be 1 or go from 1 to N??
 		neighbours.add(count, new EightQueenNode(this));        
-		neighbours.get(count).moveDown(i, j);
+		neighbours.get(count).moveDown(j,i);
+                neighbours.get(count).setParent(this);
 		//neighbours.get(count).setF(heuristic(neighbours.get(count)));
 				
 		count++;
@@ -107,10 +111,10 @@ public class EightQueenNode {
     
 	// Returns a randomly generated neighbour of a given state
 	public EightQueenNode getRandomNeighbour(EightQueenNode startState){
-		Random gen = new Random();
+		Random rand = new Random();
 		
-		int col = gen.nextInt(N);
-		int d = gen.nextInt(N-1)+1;
+		int col = rand.nextInt(N);
+		int d = rand.nextInt(N-1)+1;
 		
 		EightQueenNode neighbour = new EightQueenNode(startState);
 		neighbour.moveDown(d,col);
