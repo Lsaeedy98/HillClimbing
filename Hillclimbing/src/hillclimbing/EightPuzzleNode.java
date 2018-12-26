@@ -38,12 +38,13 @@ public class EightPuzzleNode {
     }
         
     public int[][] getNums(){
-        //make a copy and return it
+       //make a copy and return it
         int[][] nums = new int[numbers.length][];
 	for(int i = 0; i < nums.length; ++i){
 		nums[i] = Arrays.copyOf(numbers[i], numbers[i].length);
 	}
 	return nums;
+      //return numbers;
     }
     public void setBlank(){
         boolean notFound=true;
@@ -93,7 +94,7 @@ public class EightPuzzleNode {
 			tempVals[blankRow][blankColumn] = getNums()[blankRow - 1][blankColumn];
 			tempVals[blankRow - 1][blankColumn] = 0;
                         EightPuzzleNode child=new EightPuzzleNode(tempVals);
-                        child.setParent(this);
+                        //child.setParent(this);
 			neighbors.add(child);
 		}
 		//check move down
@@ -102,7 +103,7 @@ public class EightPuzzleNode {
 			tempVals[blankRow][blankColumn] = getNums()[blankRow+1][blankColumn]; 
 			tempVals[blankRow + 1][blankColumn] = 0;
 			EightPuzzleNode child=new EightPuzzleNode(tempVals);
-                        child.setParent(this);
+                        //child.setParent(this);
 			neighbors.add(child);
 
 		}
@@ -112,7 +113,7 @@ public class EightPuzzleNode {
 			tempVals[blankRow][blankColumn] = getNums()[blankRow][blankColumn+1];
 			tempVals[blankRow][blankColumn + 1] = 0;
 			EightPuzzleNode child=new EightPuzzleNode(tempVals);
-                        child.setParent(this);
+                        //child.setParent(this);
 			neighbors.add(child);
 
 		}
@@ -122,7 +123,7 @@ public class EightPuzzleNode {
 			tempVals[blankRow][blankColumn] = getNums()[blankRow][blankColumn - 1];
 			tempVals[blankRow][blankColumn - 1] = 0;
 			EightPuzzleNode child=new EightPuzzleNode(tempVals);
-                        child.setParent(this);
+                        //child.setParent(this);
 			neighbors.add(child);
 
 		}
@@ -130,16 +131,17 @@ public class EightPuzzleNode {
     public EightPuzzleNode getRandomNeighbour(){
 			makeNeighbors();
                         Random random=new Random();
-                        LinkedList<EightPuzzleNode> collection =getNeighbors();
-                        EightPuzzleNode current = collection.remove(random.nextInt(collection.size()));
+                        EightPuzzleNode current = getNeighbors().get(random.nextInt(getNeighbors().size()));
                         return current;
     }
-    public static EightPuzzleNode makeRandomNode(int[][]goal){
+    @SuppressWarnings("empty-statement")
+    public EightPuzzleNode makeRandomNode(int[][]goal){
         EightPuzzleNode temp=new EightPuzzleNode(goal);
         
-        for(int i=0;i<100;i++){
+        for(int i=0;i<10;i++){
             temp=temp.getRandomNeighbour();
         }
+        temp.printNode();
         return temp;
     }
 

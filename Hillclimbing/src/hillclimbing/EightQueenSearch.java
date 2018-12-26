@@ -7,7 +7,7 @@ package hillclimbing;
  */
 public class EightQueenSearch {
     //returns an int array: number of steps made, and 1=solution or 0 for dead end
-    public int[] steepestAscent(EightQueenNode initial, int[][] goal) {
+    public int[] steepestAscent(EightQueenNode initial) {
 	EightQueenNode current = initial;
 	current.setF(heuristic(initial));                
 	boolean foundSolution = false, deadEnd = false;
