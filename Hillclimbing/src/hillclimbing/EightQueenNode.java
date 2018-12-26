@@ -110,18 +110,26 @@ public class EightQueenNode {
     }
     
 	// Returns a randomly generated neighbour of a given state
-	public EightQueenNode getRandomNeighbour(EightQueenNode startState){
-		Random rand = new Random();
+    public EightQueenNode getRandomNeighbour(EightQueenNode startState){
+	Random rand = new Random();
 		
-		int col = rand.nextInt(N);
-		int d = rand.nextInt(N-1)+1;
-		
-		EightQueenNode neighbour = new EightQueenNode(startState);
-		neighbour.moveDown(d,col);
-		//neighbour.setF(heuristic(neighbour));
-		
-		return neighbour;
-	}
+	int col = rand.nextInt(N);
+	int d = rand.nextInt(N-1)+1;
+	EightQueenNode neighbour = new EightQueenNode(startState);
+	neighbour.moveDown(d,col);
+	//neighbour.setF(heuristic(neighbour));
+	return neighbour;
+    }
+    
+    public static EightQueenNode makeRandomNode(int N/*number of queens*/){
+        EightQueenNode temp=new EightQueenNode();
+        int[] rows =new int[N];
+        Random rand=new Random();
+        for(int i=0; i<N; i++){
+            rows[i]=rand.nextInt(N);
+        }
+        return temp;
+    }
     public void moveDown(int moves,int column/*column of the queen to move*/){
 	rowsState[column]+=moves;
         int row=rowsState[column];

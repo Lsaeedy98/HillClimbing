@@ -1,8 +1,10 @@
 package hillclimbing;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Random;
 import sun.font.EAttribute;
 
 /**
@@ -124,6 +126,21 @@ public class EightPuzzleNode {
 			neighbors.add(child);
 
 		}
+    }
+    public EightPuzzleNode getRandomNeighbour(){
+			makeNeighbors();
+                        Random random=new Random();
+                        LinkedList<EightPuzzleNode> collection =getNeighbors();
+                        EightPuzzleNode current = collection.remove(random.nextInt(collection.size()));
+                        return current;
+    }
+    public static EightPuzzleNode makeRandomNode(int[][]goal){
+        EightPuzzleNode temp=new EightPuzzleNode(goal);
+        
+        for(int i=0;i<100;i++){
+            temp=temp.getRandomNeighbour();
+        }
+        return temp;
     }
 
 }
