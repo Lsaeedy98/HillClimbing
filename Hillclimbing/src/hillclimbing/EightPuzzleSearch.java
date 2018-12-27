@@ -14,36 +14,37 @@ public class EightPuzzleSearch {
 	//returns an int array that contains number of steps made, and 1 for solution or 0 for dead end
 	public int[] steepestAscent(EightPuzzleNode initial, int[][] goal) {
                 EightPuzzleNode current = initial;
-		current.setF(ManhattanDistance(initial, goal));
+		current.setF(current.ManhattanDistance());
 		boolean foundSolution = false, deadEnd = false;
 		int steps = 0;
 		while (!foundSolution && !deadEnd) {
 			steps++;
-			current.makeNeighbors();
+                        if(steps>2000)
+                            break;
+                        System.out.println(steps);
 			EightPuzzleNode bestNode = current;
 			deadEnd = true;
-			for (EightPuzzleNode currentChild : current.getNeighbors()) {
-				currentChild.setF(ManhattanDistance(currentChild, goal));
-				if (currentChild.getF()<= bestNode.getF()) {
-					//found better node,reset deadEnd
-                                        bestNode = currentChild;
-					deadEnd = false;
-					bestNode.setParent(current);
-                                        if(currentChild.getF()==0){
-                                            foundSolution = true; 
-                                            break; 
-                                        }
-				}
+			EightPuzzleNode bestChild=current.getSteepestBestNeighbor();
+                        if(bestChild!=null) {
+                            bestNode=bestChild;
+                            current = bestNode;
+                            deadEnd = false;
+                                if(bestNode.getF()==0){
+                                    foundSolution = true; 
+                                    break; 
+                                }
 			}
-			current = bestNode;
+			
 		}
 		if(foundSolution){
                     //reconstructPath(current);
+                    System.out.println("found solution");
 			return new int[]{steps, 1};
 		}
 		else if(deadEnd){
                     //reconstructPath(current);
-			return new int[]{steps,0};
+                    System.out.println("deadend");
+                    return new int[]{steps,0};
 		}
 		else{
 		//should never happen
@@ -53,20 +54,17 @@ public class EightPuzzleSearch {
 
 	public int[] firstChoice(EightPuzzleNode initial, int[][] goal){
 		EightPuzzleNode current = initial;
-		current.setF(ManhattanDistance(initial, goal));
+		current.setF(current.ManhattanDistance());
 		boolean foundSolution = false, deadEnd = false;
 		int steps = 0;
 		while (!foundSolution && !deadEnd) {
 			steps++;
-			current.makeNeighbors();
 			EightPuzzleNode bestNode = current;
 			deadEnd = true;
 			for (EightPuzzleNode currentChild : current.getNeighbors()) {
-				currentChild.setF(ManhattanDistance(currentChild, goal));
 				if (currentChild.getF()<bestNode.getF()){
 					bestNode = currentChild;
 					deadEnd = false;
-					bestNode.setParent(current);
                                         if(currentChild.getF()==0){
                                             foundSolution=true;
                                         }
@@ -119,19 +117,6 @@ public class EightPuzzleSearch {
             reconstructPath(current);
             return new int[]{steps, nodes, 1};
 	}*/
-	public void reconstructPath(EightPuzzleNode current) {
-		int moves = 0;
-                //to determine where to stop printing the parent
-                boolean flg=true;
-		while (flg) {
-			if(current.getParent() == null)
-                            flg=false;
-                        moves++;
-                        System.out.print(moves);
-                        current.printNode();
-			current = current.getParent();
-		}                
-	}
 	public int[] simulatedAnneal(EightPuzzleNode initial,int[][] goal){
 		EightPuzzleNode currentNode = initial;
 		double temperature =30;
@@ -142,12 +127,11 @@ public class EightPuzzleSearch {
                 
                 int steps=0;
                 EightPuzzleNode nextNode =new EightPuzzleNode(new int[0][0]);
-		currentNode.setF(ManhattanDistance(currentNode, goal));
+		currentNode.setF(currentNode.ManhattanDistance());
 		while(currentNode.getF()!=0 && temperature > 0){
 			//select a random neighbour from currentNode
 			nextNode = currentNode.getRandomNeighbour();
 			steps++;
-                        nextNode.setF(ManhattanDistance(currentNode, goal));
 			if(nextNode.getF()==0){
                                 return new int[]{steps,1};
                         }
@@ -166,34 +150,5 @@ public class EightPuzzleSearch {
 		}
                 return new int[]{steps,0};
 	}
-	public int ManhattanDistance(EightPuzzleNode initial, int[][] goal) {
-		int h = 0;
-		int[][] initialValues = new int[0][0];
-		initialValues = initial.getNums();
-		for (int i = 0; i < initialValues.length; ++i) {
-			for (int j = 0; j < initialValues[i].length; ++j) {
-				if (initialValues[i][j] != goal[i][j] /*&& initialValues[i][j] != 0*/) {
-					int[] goalPosition = getGoalPositionForVal(initialValues[i][j], goal);
-					if (goalPosition != new int[] { -1, -1 }) {
-						h += (Math.abs(i - goalPosition[0]) + Math.abs(j - goalPosition[1]));// distance
-								} else {
-						System.out.println("error in input values");
-						break;
-					}
-				}
-			}
-
-		}
-		return h;
-	}
-	public int[] getGoalPositionForVal(int val, int[][] goal) {
-                for (int i = 0; i < goal.length; ++i) {
-			for (int j = 0; j < goal[i].length; ++j) {
-				if (goal[i][j] == val) {
-					return new int[] { i, j };
-				}
-			}
-		}
-                return new int[] { -1, -1 };
-	}
+	
 }

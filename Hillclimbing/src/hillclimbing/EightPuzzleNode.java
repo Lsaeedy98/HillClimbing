@@ -17,14 +17,10 @@ public class EightPuzzleNode {
     //we keep i and j of the blank tile or zero
     private int  blankRow;
     private int  blankColumn;
-    private EightPuzzleNode parent;
-    private LinkedList<EightPuzzleNode> neighbors;
 
     public EightPuzzleNode(int[][] nums) {
         numbers = nums;
-	neighbors = new LinkedList<EightPuzzleNode>();
         setBlank();
-	parent = null;
     }
         public void printNode() {
 	for (int i = 0; i < numbers.length; ++i) {
@@ -69,80 +65,99 @@ public class EightPuzzleNode {
     public int getF() {
         return f;
     }
-    
-    public EightPuzzleNode getParent() {
-        return parent;
-    }
-
-    public void setParent(EightPuzzleNode Parent) {
-        this.parent = Parent;
-    }
-
-    public LinkedList<EightPuzzleNode> getNeighbors() {
-        return neighbors;
-    }
-
-    public void setNeighbors(LinkedList<EightPuzzleNode> Neighbors) {
-        this.neighbors = Neighbors;
-    }
-    
-    public void makeNeighbors(){
+    public ArrayList<EightPuzzleNode> getNeighbors(){
 	//make sure the moves in each direction are validand if it is add a new child node  
+            ArrayList<EightPuzzleNode> children=new ArrayList<>();
             //check move up
 		if(blankRow-1 >= 0 ){
 			int[][] tempVals =  getNums();
-			tempVals[blankRow][blankColumn] = getNums()[blankRow - 1][blankColumn];
+			tempVals[blankRow][blankColumn] = tempVals[blankRow - 1][blankColumn];
 			tempVals[blankRow - 1][blankColumn] = 0;
                         EightPuzzleNode child=new EightPuzzleNode(tempVals);
-                        //child.setParent(this);
-			neighbors.add(child);
+                        child.setF(child.ManhattanDistance());
+			children.add(child);
 		}
 		//check move down
 		if(blankRow+1 < numbers.length){
 			int[][] tempVals = getNums();
-			tempVals[blankRow][blankColumn] = getNums()[blankRow+1][blankColumn]; 
+			tempVals[blankRow][blankColumn] = tempVals[blankRow+1][blankColumn]; 
 			tempVals[blankRow + 1][blankColumn] = 0;
 			EightPuzzleNode child=new EightPuzzleNode(tempVals);
-                        //child.setParent(this);
-			neighbors.add(child);
-
+                        child.setF(child.ManhattanDistance());
+			children.add(child);
 		}
 		//check move to the right
 		if(blankColumn+1 < numbers[blankRow].length ){
 			int[][] tempVals = getNums();
-			tempVals[blankRow][blankColumn] = getNums()[blankRow][blankColumn+1];
+			tempVals[blankRow][blankColumn] = tempVals[blankRow][blankColumn+1];
 			tempVals[blankRow][blankColumn + 1] = 0;
 			EightPuzzleNode child=new EightPuzzleNode(tempVals);
-                        //child.setParent(this);
-			neighbors.add(child);
+                        child.setF(child.ManhattanDistance());
+			children.add(child);
 
 		}
 		//check move to the left
 		if(blankColumn-1 >= 0){
 			int[][] tempVals =  getNums();
-			tempVals[blankRow][blankColumn] = getNums()[blankRow][blankColumn - 1];
+			tempVals[blankRow][blankColumn] = tempVals[blankRow][blankColumn - 1];
 			tempVals[blankRow][blankColumn - 1] = 0;
 			EightPuzzleNode child=new EightPuzzleNode(tempVals);
-                        //child.setParent(this);
-			neighbors.add(child);
+                        child.setF(child.ManhattanDistance());
+			children.add(child);
+		}
+                return children;
+    }
+    public EightPuzzleNode getSteepestBestNeighbor(){ 
+        EightPuzzleNode best=null;
+        int bestf=getF();
+        for(EightPuzzleNode currentChild : getNeighbors()){
+            if(currentChild.getF()<=bestf){
+                        best=currentChild;
+                        bestf=currentChild.getF();
+                        currentChild.printNode();
+                    }
+        }
+        return best;
+    }
+    public int ManhattanDistance(/*, int[][] goal*/) {
+        int[][] goal = new int[][] { 
+            { 1, 2, 3 },
+            { 8, 0, 4 },
+            { 7, 6, 5 } }; 
+        int h = 0;
+		int[][] initialValues = new int[0][0];
+		initialValues = numbers;
+		for (int i = 0; i < initialValues.length; ++i) {
+			for (int j = 0; j < initialValues[i].length; ++j) {
+				if (initialValues[i][j] != goal[i][j] /*&& initialValues[i][j] != 0*/) {
+					int[] goalPosition = getGoalPositionForVal(initialValues[i][j], goal);
+					if (goalPosition != new int[] { -1, -1 }) {
+						h += (Math.abs(i - goalPosition[0]) + Math.abs(j - goalPosition[1]));// distance
+								} else {
+						System.out.println("error in input values");
+						break;
+					}
+				}
+			}
 
 		}
-    }
+		return h;
+	}
+    public int[] getGoalPositionForVal(int val, int[][] goal) {
+                for (int i = 0; i < goal.length; ++i) {
+			for (int j = 0; j < goal[i].length; ++j) {
+				if (goal[i][j] == val) {
+					return new int[] { i, j };
+				}
+			}
+		}
+                return new int[] { -1, -1 };
+	}
     public EightPuzzleNode getRandomNeighbour(){
-			makeNeighbors();
                         Random random=new Random();
                         EightPuzzleNode current = getNeighbors().get(random.nextInt(getNeighbors().size()));
                         return current;
     }
-    @SuppressWarnings("empty-statement")
-    public EightPuzzleNode makeRandomNode(int[][]goal){
-        EightPuzzleNode temp=new EightPuzzleNode(goal);
-        
-        for(int i=0;i<10;i++){
-            temp=temp.getRandomNeighbour();
-        }
-        temp.printNode();
-        return temp;
-    }
+    
 
 }
