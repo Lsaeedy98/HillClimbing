@@ -14,9 +14,8 @@ public class EightQueenSearch {
 	int steps = 0;
 	while (!foundSolution && !deadEnd) {
 		steps++;
-                if(steps>2000)
+                if(steps>1000)
                     break;
-                System.out.println(steps);
 		EightQueenNode bestNode = current;
 		deadEnd = true;
 		EightQueenNode bestChild=current.getSteepestBestNeighbor();
@@ -51,7 +50,6 @@ public class EightQueenSearch {
                     steps++;
                     if(steps>2000)
                     break;
-                    System.out.println(steps);
                     EightQueenNode bestNode = current;
                     deadEnd = true;
                     EightQueenNode firstChild=current.getFirstChoiceNeighbor();

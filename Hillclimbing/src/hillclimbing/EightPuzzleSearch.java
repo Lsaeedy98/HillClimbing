@@ -21,7 +21,6 @@ public class EightPuzzleSearch {
 			steps++;
                         if(steps>2000)
                             break;
-                        System.out.println(steps);
 			EightPuzzleNode bestNode = current;
 			deadEnd = true;
 			EightPuzzleNode bestChild=current.getSteepestBestNeighbor();
@@ -37,13 +36,9 @@ public class EightPuzzleSearch {
 			
 		}
 		if(foundSolution){
-                    //reconstructPath(current);
-                    System.out.println("found solution");
 			return new int[]{steps, 1};
 		}
 		else if(deadEnd){
-                    //reconstructPath(current);
-                    System.out.println("deadend");
                     return new int[]{steps,0};
 		}
 		else{
