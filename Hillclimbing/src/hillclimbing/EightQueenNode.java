@@ -10,22 +10,21 @@ import java.util.Random;
  */
 
 public class EightQueenNode {
-    //int row is state[i]
-    //int column is index i which doesnt change for each queen
+    //int row is state[i],int column is index i which doesnt change for each queen
     private int[] rowsState;
     private final int N=8;
-    private ArrayList<EightQueenNode> neighbours;
+    //private ArrayList<EightQueenNode> neighbours;
     private int f;
-    private EightQueenNode parent;
+    //private EightQueenNode parent;
     
     public EightQueenNode(){
 	rowsState = new int[N]; //empty state
-	neighbours = new ArrayList<EightQueenNode>(); //empty neighbour list
+	//neighbours = new ArrayList<EightQueenNode>();
         f=0;
     }
     public EightQueenNode(EightQueenNode q){
         rowsState = new int[N];
-	neighbours = new ArrayList<EightQueenNode>();
+	//neighbours = new ArrayList<EightQueenNode>();
 	for(int i=0; i<N; i++)
             rowsState[i] = q.getRowsState()[i];
 	f=0;
@@ -38,7 +37,7 @@ public class EightQueenNode {
     public int getF() {
         return f;
     }
-
+/*
     public void setParent(EightQueenNode Parent) {
         this.parent = parent;
     }
@@ -46,11 +45,11 @@ public class EightQueenNode {
     public EightQueenNode getParent() {
         return parent;
     }
-
+*/
     public int getN() {
         return N;
     }
-    
+   
     public int[] getRowsState() {
          //make a copy and return it
         int[] rows = new int[N];
@@ -91,22 +90,45 @@ public class EightQueenNode {
     public void printNode(){
         System.out.println(this.toString());
     }
-    public void makeNeighbours(){
-            int count=0;
+    public ArrayList<EightQueenNode> getNeighbours(){
+        ArrayList<EightQueenNode> neighbours=new ArrayList<>();
 	for(int i=0; i<N; i++){
             for(int j=1; j<N; j++){
-		neighbours.add(count, new EightQueenNode(this));        
-		neighbours.get(count).moveDown(j,i);
-                neighbours.get(count).setParent(this);
-                neighbours.get(count).printNode();
-		//neighbours.get(count).setF(heuristic(neighbours.get(count)));
-		count++;
+                EightQueenNode neighbour=new EightQueenNode(this);
+		neighbour.moveDown(j,i);
+                neighbour.printNode();
+		neighbour.setF(neighbour.heuristic());
+                neighbours.add(neighbour);
             }
 	}
-    }
-
-    public ArrayList<EightQueenNode> getNeighbours() {
         return neighbours;
+    }
+    public EightQueenNode getSteepestBestNeighbor(){ 
+        EightQueenNode best=null;
+        int bestf=getF();
+        for(EightQueenNode currentChild : getNeighbours()){
+            if(currentChild.getF()<=bestf){
+                        best=currentChild;
+                        bestf=currentChild.getF();
+                        currentChild.printNode();
+                    }
+        }
+        return best;
+    }
+    
+    public EightQueenNode getFirstChoiceNeighbor(){ 
+        ArrayList<EightQueenNode> bestNeighbors=new ArrayList<>();
+        for(EightQueenNode currentChild : getNeighbours()){
+            if(currentChild.getF()<getF()){
+                        bestNeighbors.add(currentChild);
+                        currentChild.printNode();
+                    }
+        }
+        Random random =new Random();
+        if(bestNeighbors.isEmpty())
+            return null;
+        else
+            return bestNeighbors.get(random.nextInt(bestNeighbors.size()));
     }
     
 	// Returns a randomly generated neighbour of a given state
@@ -117,19 +139,8 @@ public class EightQueenNode {
 	int d = rand.nextInt(N-1)+1;
 	EightQueenNode neighbour = new EightQueenNode(this);
 	neighbour.moveDown(d,col);
-	//neighbour.setF(heuristic(neighbour));
+	neighbour.setF(neighbour.heuristic());
 	return neighbour;
-    }
-    
-    public EightQueenNode makeRandomNode(int N/*number of queens*/){
-        EightQueenNode temp=new EightQueenNode();
-        int[] rows =new int[N];
-        Random rand=new Random();
-        for(int i=0; i<N; i++){
-            rows[i]=rand.nextInt(N);
-        }
-        temp.setRowsState(rows);
-        return temp;
     }
     public void moveDown(int moves,int column/*column of the queen to move*/){
 	rowsState[column]+=moves;
@@ -141,6 +152,28 @@ public class EightQueenNode {
 	else if(row>7 && row%7==0){
 		rowsState[column]=7;
 	}
+    }
+    public boolean canAttack(int row1,int column1,int row2,int column2){
+	boolean canAttack=false;
+        if(row1==row2 || column1==column2)
+            canAttack=true;
+	//test diagonal attacking
+	else if(Math.abs(column1-column2) == Math.abs(row1-row2))
+		canAttack=true;
+			
+	return canAttack;
+    }    
+    public int heuristic(){
+        int h=0;
+        for(int i=0; i< (getN()-1); i++){
+		for(int j=i+1; j<getN(); j++){
+			//if state i can attack state j which are queens at columns i and j
+                        if(canAttack(rowsState[i],i,rowsState[j],j)){
+                            h++;
+                        }
+		}
+	}	
+            return h;
     }
 }
 
