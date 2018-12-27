@@ -82,36 +82,6 @@ public class EightPuzzleSearch {
 		}
 		
 	}
-	
-	/*public int[] randomRestart(EightPuzzleNode initial, int[][] goal){
-            EightPuzzleNode current = initial;
-            int nodes = 0, steps = 0;
-            HashSet<String> added = new HashSet<String>(); 
-            ArrayList<EightPuzzleNode> collection = new ArrayList<EightPuzzleNode>();
-            //added.add(current.getKey());
-            collection.add(current);
-            
-            Random random = new Random();
-            int[] results = steepestAscent(current, goal);
-            while(results[2] != 1){
-			current.makeNeighbors();
-			for(EightPuzzleNode currentChild: current.getNeighbors()){
-                            if(!added.contains(currentChild.getKey())){
-				added.add(currentChild.getKey());
-				collection.add(currentChild);
-                            }
-			}
-			current = collection.remove(random.nextInt(collection.size()));
-                          while (!current.getNeighbors().isEmpty()) {
-                               current.getNeighbors().removeFirst();
-                            }
-			results = steepestAscent(current, goal);
-			steps += results[0];
-			nodes += results[1];
-            }
-            reconstructPath(current);
-            return new int[]{steps, nodes, 1};
-	}*/
 	public int[] simulatedAnneal(EightPuzzleNode initial,int[][] goal){
 		EightPuzzleNode currentNode = initial;
 		double temperature =30;
