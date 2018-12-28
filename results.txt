@@ -1,0 +1,50 @@
+1-here are the average results for each random input 
+hint:steps are number of loops to generate next move 
+
+a)8puzzle
+algorithm:hillclimbing steepest ascent
+steps:0.8
+wins:27%
+overall time:372ms  
+
+algorithm:hillclimbing first choice
+steps:1.7
+wins:20.8%
+overall time:0  
+
+algorithm:simulated annealing
+steps:40.8
+wins:16.6%
+overall time:0.5ms  
+*********************************************************************************************************
+b)8queen
+algorithm:hillclimbing steepest ascent
+steps:0.83
+wins:16.6%
+overall time:89349ms  
+
+algorithm:hillclimbing first choice
+steps:5.5
+wins:8%
+overall time:206ms  
+
+algorithm:simulated annealing
+steps:60(bound based on the temperature)
+wins:0%
+overall time:0.4ms  
+
+
+
+2- these are number of states each algorithms checks averagely
+a)8 puzzle - there are 9!(362,880) states altogether
+
+steepest ascent hill climbing : 3,502 
+first choice hill climbing:4.25
+simulated annealing:47 
+*********************************************************************************************************
+b)8 queen - there are 8^8(16,777,216) states altogether
+
+steepest ascent hill climbing : 46,713 
+first choice hill climbing:5.25
+simulated annealing:60 
+
